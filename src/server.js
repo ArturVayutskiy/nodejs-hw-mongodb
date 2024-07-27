@@ -24,6 +24,7 @@ export const setupServer = () => {
     const contacts = await getAllcontacts();
 
     res.status(200).json({
+      status: 200,
       data: contacts,
       message: 'Successfully found contacts!',
     });
@@ -36,6 +37,7 @@ export const setupServer = () => {
     // Відповідь, якщо контакт не знайдено
     if (!contact) {
       res.status(404).json({
+        status: 404,
         message: 'Contact not found',
       });
       return;
@@ -43,6 +45,7 @@ export const setupServer = () => {
 
     // Відповідь, якщо контакт знайдено
     res.status(200).json({
+      status: 200,
       message: `"Successfully found contact with id ${contactId}!"`,
       data: contact,
     });
