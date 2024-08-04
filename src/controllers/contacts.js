@@ -19,7 +19,7 @@ export const getContactsController =
     });
   });
 
-// Пошут контакту по айді
+// Пошук контакту по айді
 export const getContactByIdController =
   ('/contacts/:contactId',
   async (req, res, next) => {
@@ -28,14 +28,12 @@ export const getContactByIdController =
 
     // Відповідь, якщо контакт не знайдено
     if (!contact) {
-      res.status(404).json({
-        message: 'Contact not found',
-      });
-      return;
+      throw createHttpError(404, 'Contact not found');
     }
 
     // Відповідь, якщо контакт знайдено
     res.status(200).json({
+      status: 200,
       message: `"Successfully found contact with id ${contactId}!"`,
       data: contact,
     });
