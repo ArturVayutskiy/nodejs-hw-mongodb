@@ -2,23 +2,34 @@ import createHttpError from 'http-errors';
 import {
   createContact,
   deleteContact,
-  getAllcontacts,
+  getAllContacts,
   getContactById,
   updateContact,
 } from '../services/contacts.js';
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+import { parseSortParams } from '../utils/parseSortParams.js';
+import { parseFilterParams } from '../utils/parseFilterParams.js';
 
 // Пошут всіх контактів
-export const getContactsController =
-  ('/contacts',
-  async (req, res) => {
-    const contacts = await getAllcontacts();
+export const getContactsController = async (req, res) => {
+  const { page, perPage } = parsePaginationParams(req.query);
+  const { sortBy, sortOrder } = parseSortParams(req.query);
+  const filter = parseFilterParams(req.query);
 
-    res.status(200).json({
-      status: 200,
-      data: contacts,
-      message: 'Successfully found contacts!',
-    });
+  const contacts = await getAllContacts({
+    page,
+    perPage,
+    sortBy,
+    sortOrder,
+    filter,
   });
+
+  res.json({
+    status: 200,
+    message: 'Successfully found contacts!',
+    data: contacts,
+  });
+};
 
 // Пошук контакту по айді
 export const getContactByIdController =
