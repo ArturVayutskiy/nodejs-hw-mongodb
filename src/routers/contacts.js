@@ -14,11 +14,14 @@ import {
   updateContactSchema,
 } from '../validator/contacts.js';
 import { isValidId } from '../middlewares/isValidId.js';
+import { authenticate } from '../middlewares/authenticate.js';
 
 const router = Router();
+
 router.use('/contacts/:contactId', isValidId);
 
-router.get('/contacts', ctrlWrapper(getContactsController));
+router.use('/', authenticate);
+router.get('/', ctrlWrapper(getContactsController));
 
 router.get(
   '/contacts/:contactId',
