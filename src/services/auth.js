@@ -4,6 +4,7 @@ import createHttpError from 'http-errors';
 import { UsersCollection } from '../db/models/user.js';
 import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/index.js';
 import { SessionsCollection } from '../db/models/session.js';
+import { randomBytes } from 'crypto';
 
 export const registerUser = async (payload) => {
   const user = await UsersCollection.findOne({ email: payload.email });
@@ -30,9 +31,8 @@ export const loginUser = async (payload) => {
 
   await SessionsCollection.deleteOne({ userId: user._id });
 
-  // eslint-disable-next-line no-undef
   const accessToken = randomBytes(30).toString('base64');
-  // eslint-disable-next-line no-undef
+
   const refreshToken = randomBytes(30).toString('base64');
 
   return await SessionsCollection.create({
