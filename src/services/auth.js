@@ -44,14 +44,12 @@ export const loginUser = async (payload) => {
   });
 };
 
-export const logoutUser = async (sessionId) => {
-  await SessionsCollection.deleteOne({ _id: sessionId });
+export const logoutUser = async ({ sessionId, refreshToken }) => {
+  return await SessionsCollection.deleteOne({ _id: sessionId, refreshToken });
 };
 
 const createSession = () => {
-  // eslint-disable-next-line no-undef
   const accessToken = randomBytes(30).toString('base64');
-  // eslint-disable-next-line no-undef
   const refreshToken = randomBytes(30).toString('base64');
 
   return {
