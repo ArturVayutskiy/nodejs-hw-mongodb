@@ -55,17 +55,23 @@ export const getContactByIdController =
   });
 
 //   Створення контакту
-export const createContactController = async (req, res) => {
-  const userId = req.user._id;
-  const contact = await createContact(req.body, userId);
 
-  res.status(201).json({
-    status: 201,
-    message: 'Successfully created a Contact!',
-    data: contact,
-  });
+export const createContactController = async (req, res, next) => {
+  try {
+    const { body } = req;
+    const userId = req.user._id;
+    const contact = await createContact({ ...body, userId });
+
+    res.status(201).json({
+      status: 201,
+      message: 'Successfully created a Contact!',
+      data: contact,
+    });
+  } catch (error) {
+    console.error('Error creating contact:', error);
+    next(error);
+  }
 };
-
 // Оновлення даних контакту
 export const patchContactController = async (req, res, next) => {
   const { contactId } = req.params;
