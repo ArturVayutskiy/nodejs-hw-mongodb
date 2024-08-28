@@ -34,25 +34,40 @@ export const getContactsController = async (req, res) => {
 };
 
 // Пошук контакту по айді
-export const getContactByIdController =
-  ('/contacts/:contactId',
-  async (req, res, next) => {
-    const { contactId } = req.params;
-    const userId = req.user._id;
-    const contact = await getContactById(contactId, userId);
+// export const getContactByIdController =
+//   ('/contacts/:contactId',
+//   async (req, res, next) => {
+//     const { contactId } = req.params;
+//     const userId = req.user._id;
+//     const contact = await getContactById(contactId, userId);
 
-    // Відповідь, якщо контакт не знайдено
-    if (!contact) {
-      throw createHttpError(404, 'Contact not found');
-    }
+//     // Відповідь, якщо контакт не знайдено
+//     if (!contact) {
+//       throw createHttpError(404, 'Contact not found');
+//     }
 
-    // Відповідь, якщо контакт знайдено
-    res.status(200).json({
-      status: 200,
-      message: `"Successfully found contact with id ${contactId}!"`,
-      data: contact,
-    });
+//     // Відповідь, якщо контакт знайдено
+//     res.status(200).json({
+//       status: 200,
+//       message: `"Successfully found contact with id ${contactId}!"`,
+//       data: contact,
+//     });
+//   });
+export const getContactByIdController = async (req, res, next) => {
+  const { contactId } = req.params;
+  const userId = req.user._id;
+  const contact = await getContactById(contactId, userId);
+
+  if (!contact) {
+    return next(createHttpError(404, 'Contact not found'));
+  }
+
+  res.status(200).json({
+    status: 200,
+    message: `Successfully found contact with id ${contactId}!`,
+    data: contact,
   });
+};
 
 //   Створення контакту
 
