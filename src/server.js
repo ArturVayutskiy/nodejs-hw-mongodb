@@ -6,6 +6,7 @@ import { notFoundHandler } from './middlewares/notFoundHandler.js';
 // import router from './routers/contacts.js';
 import router from './routers/index.js';
 import cookieParser from 'cookie-parser';
+import { UPLOAD_DIR } from './constants/index.js';
 
 // eslint-disable-next-line no-undef
 const PORT = process.env.PORT || 3000;
@@ -34,4 +35,6 @@ export const setupServer = () => {
     // eslint-disable-next-line no-undef
     console.log(`Server is running on port ${PORT}`);
   });
+
+  app.use('/uploads', express.static(UPLOAD_DIR));
 };

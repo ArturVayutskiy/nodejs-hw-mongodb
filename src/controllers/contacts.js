@@ -9,6 +9,7 @@ import {
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 
 // Пошут всіх контактів
 export const getContactsController = async (req, res) => {
@@ -75,8 +76,25 @@ export const createContactController = async (req, res, next) => {
 // Оновлення даних контакту
 export const patchContactController = async (req, res, next) => {
   const { contactId } = req.params;
+
+  const photo = req.file;
+
+  let photoUrl;
+
+  if (photo) {
+    photoUrl = await saveFileToUploadDir(photo);
+  }
+
   const userId = req.user._id;
-  const result = await updateContact(contactId, req.body, userId);
+  // const result = await updateContact(contactId, req.body, userId);
+  const result = await updateContact(
+    contactId,
+    {
+      ...req.body,
+      photo: photoUrl,
+    },
+    userId,
+  );
 
   if (!result) {
     next(createHttpError(404, 'Contact not found'));
