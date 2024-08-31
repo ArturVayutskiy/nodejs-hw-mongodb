@@ -10,6 +10,8 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+import { env } from '../utils/env.js';
 
 // Пошут всіх контактів
 export const getContactsController = async (req, res) => {
@@ -35,25 +37,23 @@ export const getContactsController = async (req, res) => {
 };
 
 // Пошук контакту по айді
-export const getContactByIdController =
-  ('/contacts/:contactId',
-  async (req, res, next) => {
-    const { contactId } = req.params;
-    const userId = req.user._id;
-    const contact = await getContactById(contactId, userId);
+export const getContactByIdController = async (req, res, next) => {
+  const { contactId } = req.params;
+  const userId = req.user._id;
+  const contact = await getContactById(contactId, userId);
 
-    // Відповідь, якщо контакт не знайдено
-    if (!contact) {
-      throw createHttpError(404, 'Contact not found');
-    }
+  // Відповідь, якщо контакт не знайдено
+  if (!contact) {
+    throw createHttpError(404, 'Contact not found');
+  }
 
-    // Відповідь, якщо контакт знайдено
-    res.status(200).json({
-      status: 200,
-      message: `"Successfully found contact with id ${contactId}!"`,
-      data: contact,
-    });
+  // Відповідь, якщо контакт знайдено
+  res.status(200).json({
+    status: 200,
+    message: `Successfully found contact with id ${contactId}!`,
+    data: contact,
   });
+};
 
 //   Створення контакту
 
@@ -76,36 +76,42 @@ export const createContactController = async (req, res, next) => {
 // Оновлення даних контакту
 export const patchContactController = async (req, res, next) => {
   const { contactId } = req.params;
+  const userId = req.user._id;
 
   const photo = req.file;
 
   let photoUrl;
-
+  const enableCloudinary = env('ENABLE_CLOUDINARY', 'false');
   if (photo) {
-    photoUrl = await saveFileToUploadDir(photo);
+    if (enableCloudinary === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
   }
+  try {
+    const result = await updateContact(
+      contactId,
+      {
+        ...req.body,
+        photo: photoUrl,
+      },
+      userId,
+    );
 
-  const userId = req.user._id;
-  // const result = await updateContact(contactId, req.body, userId);
-  const result = await updateContact(
-    contactId,
-    {
-      ...req.body,
-      photo: photoUrl,
-    },
-    userId,
-  );
+    if (!result) {
+      next(createHttpError(404, 'Contact not found'));
+      return;
+    }
 
-  if (!result) {
-    next(createHttpError(404, 'Contact not found'));
-    return;
+    res.json({
+      status: 200,
+      message: `Successfully patched a contact!`,
+      data: result.contact,
+    });
+  } catch (error) {
+    next(error);
   }
-
-  res.json({
-    status: 200,
-    message: `Successfully patched a contact!`,
-    data: result.contact,
-  });
 };
 
 // Видалення контакту
