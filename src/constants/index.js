@@ -1,5 +1,7 @@
 import path from 'node:path';
 
+import path from 'node:path';
+
 export const SORT_ORDER = {
   ASC: 'asc',
   DESC: 'desc',
@@ -15,6 +17,7 @@ export const SMTP = {
   SMTP_PASSWORD: 'SMTP_PASSWORD',
   SMTP_FROM: 'SMTP_FROM',
   JWT_SECRET: 'JWT_SECRET',
+  APP_DOMAIN: 'http://localhost:3000',
 };
 
 export const TEMP_UPLOAD_DIR = path.join(process.cwd(), 'temp');
