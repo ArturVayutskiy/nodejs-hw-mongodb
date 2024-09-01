@@ -61,7 +61,7 @@ export const createContactController = async (req, res, next) => {
   try {
     const { body } = req;
     const userId = req.user._id;
-    const photo = req.file; // Получаем файл из запроса
+    const photo = req.file;
 
     let photoUrl;
     const enableCloudinary = env('ENABLE_CLOUDINARY', 'false');
@@ -76,7 +76,7 @@ export const createContactController = async (req, res, next) => {
     const contact = await createContact({
       ...body,
       userId,
-      photo: photoUrl, // Добавляем URL фотографии в контакт
+      photo: photoUrl,
     });
 
     res.status(201).json({
