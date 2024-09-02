@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import createHttpError from 'http-errors';
 import swaggerUI from 'swagger-ui-express';
 import fs from 'node:fs';

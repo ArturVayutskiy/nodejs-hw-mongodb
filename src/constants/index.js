@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import path from 'node:path';
 
 export const SORT_ORDER = {

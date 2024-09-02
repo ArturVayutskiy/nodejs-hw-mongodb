@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 import createHttpError from 'http-errors';
 import {
   createContact,
