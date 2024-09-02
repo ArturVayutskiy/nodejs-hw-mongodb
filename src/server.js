@@ -7,6 +7,7 @@ import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import router from './routers/index.js';
 import cookieParser from 'cookie-parser';
 import { UPLOAD_DIR } from './constants/index.js';
+import { swaggerDocs } from './middlewares/swaggerDocs.js';
 
 // eslint-disable-next-line no-undef
 const PORT = process.env.PORT || 3000;
@@ -37,4 +38,6 @@ export const setupServer = () => {
   });
 
   app.use('/uploads', express.static(UPLOAD_DIR));
+
+  app.use('/api-docs', swaggerDocs());
 };
